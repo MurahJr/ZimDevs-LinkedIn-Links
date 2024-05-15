@@ -20,12 +20,11 @@
 			<!-- Links will be added here -->
 		</ul>
 	</div>
-	
 	<script>
 		// Get the form and links container
 		const form = document.getElementById('linkedin-form');
 		const linksContainer = document.getElementById('linkedin-links');
-		
+
 		// Add an event listener to the form
 		form.addEventListener('submit', (e) => {
 			e.preventDefault();
@@ -33,35 +32,60 @@
 			const link = document.getElementById('linkedin-link').value;
 			addLink(name, link);
 			form.reset();
-			
-			// Store the data in local storage
-			const data = { name, link };
-			const existingData = localStorage.getItem('linkedin-data');
-			const newData = [...(existingData ? JSON.parse(existingData) : []), data];
-			localStorage.setItem('linkedin-data', JSON.stringify(newData));
 		});
-		
+
 		// Function to add a link to the list
 		function addLink(name, link) {
 			const linkElement = document.createElement('li');
-			linkElement.textContent = `${name} - ${link}`;
 			linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
 			linksContainer.appendChild(linkElement);
+
+			// Post the data to the GitHub API
+			const apiUrl = 'https://api.github.com/repos/MurahJr/ZimDevs-LinkedIn-Links/issues';
+			const token = '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';
+			const issueData = {
+				title: name,
+				body: link
+			};
+
+			fetch(apiUrl, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Accept': 'application/vnd.github.v3+json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(issueData),
+			})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
 		}
-		
-		// Function to retrieve and display stored data
-		function displayStoredData() {
-			const storedData = localStorage.getItem('linkedin-data');
-			if (storedData) {
-				const data = JSON.parse(storedData);
-				data.forEach((item) => {
-					addLink(item.name, item.link);
-				});
-			}
-		}
-		
-		// Call the function to display stored data when the page loads
-		document.addEventListener('DOMContentLoaded', displayStoredData);
+
+		// Get the data from the GitHub API and display it
+		const apiUrl = 'https://api.github.com/repos/MurahJr/ZimDevs-LinkedIn-Links/issues';
+		const token = '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';
+
+		fetch(apiUrl, {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Accept': 'application/vnd.github.v3+json'
+			},
+		})
+		.then((res) => res.json())
+		.then((data) => {
+			data.forEach((issue) => {
+				addLink(issue.title, issue.body);
+			});
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
 	</script>
 </body>
 </html>
