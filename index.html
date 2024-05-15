@@ -34,7 +34,7 @@
             form.reset();
         });
 
-        // Function to add a link to the list
+        // Function to add a link to the list and save to GitHub
         function addLink(name, link) {
             const linkElement = document.createElement('li');
             linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
@@ -71,31 +71,46 @@
             });
         }
 
-        // Get the data from the GitHub API and display it
-        const apiUrl = 'https://api.github.com/repos/MurahJr/ZimDevs-LinkedIn-Links/issues';
-        const token = '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';
+        // Function to fetch and display existing links
+        function fetchAndDisplayLinks() {
+            const apiUrl = 'https://api.github.com/repos/MurahJr/ZimDevs-LinkedIn-Links/issues';
+            const token = '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';
 
-        fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            },
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            return res.json();
-        })
-        .then((data) => {
-            data.forEach((issue) => {
-                addLink(issue.title, issue.body);
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+            })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                linksContainer.innerHTML = ''; // Clear existing content
+                data.forEach((issue) => {
+                    const name = issue.title;
+                    const link = issue.body;
+                    addLinkToDOM(name, link);
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
             });
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+        }
+
+        // Function to add a link to the DOM (used by both addLink and fetchAndDisplayLinks)
+        function addLinkToDOM(name, link) {
+            const linkElement = document.createElement('li');
+            linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
+            linksContainer.appendChild(linkElement);
+        }
+
+        // Fetch and display links when the page loads
+        fetchAndDisplayLinks();
     </script>
 </body>
 </html>
