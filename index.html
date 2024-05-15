@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LinkedIn Links</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Share Your LinkedIn Profile</h1>
+		<img src="linkedin-logo.png" alt="LinkedIn Logo">
+		<form id="linkedin-form">
+			<label for="name">Enter your name:</label>
+			<input type="text" id="name" name="name" required>
+			<label for="linkedin-link">Enter your LinkedIn profile link:</label>
+			<input type="url" id="linkedin-link" name="linkedin-link" required>
+			<button type="submit">Submit</button>
+		</form>
+		<h2>LinkedIn Profiles</h2>
+		<ul id="linkedin-links">
+			<!-- Links will be added here -->
+		</ul>
+	</div>
+	
+	<script>
+		// Get the form and links container
+		const form = document.getElementById('linkedin-form');
+		const linksContainer = document.getElementById('linkedin-links');
+		
+		// Add an event listener to the form
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const name = document.getElementById('name').value;
+			const link = document.getElementById('linkedin-link').value;
+			addLink(name, link);
+			form.reset();
+		});
+		
+		// Function to add a link to the list
+		function addLink(name, link) {
+			const linkElement = document.createElement('li');
+			linkElement.textContent = `${name} - ${link}`;
+			linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
+			linksContainer.appendChild(linkElement);
+		}
+	</script>
+</body>
+</html>
