@@ -36,9 +36,7 @@
 
         // Function to add a link to the list and save to GitHub
         function addLink(name, link) {
-            const linkElement = document.createElement('li');
-            linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
-            linksContainer.appendChild(linkElement);
+            addLinkToDOM(name, link); // Add the link to the DOM
 
             // Post the data to the GitHub API
             const apiUrl = 'https://api.github.com/repos/MurahJr/ZimDevs-LinkedIn-Links/issues';
@@ -90,7 +88,6 @@
                 return res.json();
             })
             .then((data) => {
-                linksContainer.innerHTML = ''; // Clear existing content
                 data.forEach((issue) => {
                     const name = issue.title;
                     const link = issue.body;
@@ -102,7 +99,7 @@
             });
         }
 
-        // Function to add a link to the DOM (used by both addLink and fetchAndDisplayLinks)
+        // Function to add a link to the DOM
         function addLinkToDOM(name, link) {
             const linkElement = document.createElement('li');
             linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
