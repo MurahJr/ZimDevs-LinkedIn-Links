@@ -33,6 +33,12 @@
 			const link = document.getElementById('linkedin-link').value;
 			addLink(name, link);
 			form.reset();
+			
+			// Store the data in local storage
+			const data = { name, link };
+			const existingData = localStorage.getItem('linkedin-data');
+			const newData = [...(existingData ? JSON.parse(existingData) : []), data];
+			localStorage.setItem('linkedin-data', JSON.stringify(newData));
 		});
 		
 		// Function to add a link to the list
@@ -42,6 +48,20 @@
 			linkElement.innerHTML = `<a href="${link}" target="_blank">${name} - ${link}</a>`;
 			linksContainer.appendChild(linkElement);
 		}
+		
+		// Function to retrieve and display stored data
+		function displayStoredData() {
+			const storedData = localStorage.getItem('linkedin-data');
+			if (storedData) {
+				const data = JSON.parse(storedData);
+				data.forEach((item) => {
+					addLink(item.name, item.link);
+				});
+			}
+		}
+		
+		// Call the function to display stored data when the page loads
+		document.addEventListener('DOMContentLoaded', displayStoredData);
 	</script>
 </body>
 </html>
